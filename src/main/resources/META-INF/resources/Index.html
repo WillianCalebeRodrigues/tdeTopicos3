@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Sistema de Biblioteca Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        /* CSS básico para layout e responsividade */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        header p {
+            margin-top: 0.3rem;
+            font-style: italic;
+            font-weight: 300;
+        }
+        /* Botão de voltar */
+        .back-button {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            background-color: #2980b9;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .back-button:hover {
+            background-color: #1f618d;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        .card {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+            flex: 1 1 200px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .card .value {
+            font-size: 2rem;
+            margin-top: 0.3rem;
+            color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #2980b9;
+            color: white;
+            font-weight: 600;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        @media (max-width: 768px) {
+            .back-button {
+                position: static;
+                transform: none;
+                margin-bottom: 1rem;
+                display: inline-flex;
+            }
+            header {
+                padding-top: 1rem;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            th {
+                display: none;
+            }
+            tr {
+                margin-bottom: 1rem;
+                background: white;
+                border-radius: 8px;
+                padding: 0.5rem;
+                box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+            }
+            td {
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+                border: none;
+                border-bottom: 1px solid #eee;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-weight: 600;
+                color: #555;
+                white-space: nowrap;
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <header>
+        <h:link styleClass="back-button" outcome="index">
+            <span>← Voltar</span>
+        </h:link>
+        <h1>📚 Sistema de Biblioteca Digital</h1>
+        <p>Demonstração de Relacionamentos JPA</p>
+    </header>
+
+    <section class="stats">
+        <div class="card">
+            <h:outputText value="Total de Livros" />
+            <div class="value">
+                <h:outputText value="#{bibliotecaBean.totalLivros}" />
+            </div>
+        </div>
+        <div class="card">
+            <h:outputText value="Livros Disponíveis" />
+            <div class="value">
+                <h:outputText value="#{bibliotecaBean.livrosDisponiveis}" />
+            </div>
+        </div>
+        <div class="card">
+            <h:outputText value="Empréstimos Ativos" />
+            <div class="value">
+                <h:outputText value="#{bibliotecaBean.emprestimosAtivosCount}" />
+            </div>
+        </div>
+        <div class="card">
+            <h:outputText value="Total de Autores" />
+            <div class="value">
+                <h:outputText value="#{bibliotecaBean.totalAutores}" />
+            </div>
+        </div>
+    </section>
+
+    <h:form>
+        <h2>Autores</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th><h:outputText value="Nome" /></th>
+                    <th><h:outputText value="Email" /></th>
+                    <th><h:outputText value="Quantidade de Livros" /></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ui:repeat value="#{bibliotecaBean.autores}" var="autor">
+                    <tr>
+                        <td data-label="Nome">
+                            <h:outputText value="#{autor.nome}" />
+                        </td>
+                        <td data-label="Email">
+                            <h:outputText value="#{autor.email}" />
+                        </td>
+                        <td data-label="Quantidade de Livros">
+                            <h:outputText value="#{autor.livros.size()}" />
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </tbody>
+        </table>
+
+        <h2>Livros</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th><h:outputText value="Título" /></th>
+                    <th><h:outputText value="Autor" /></th>
+                    <th><h:outputText value="ISBN" /></th>
+                    <th><h:outputText value="Status" /></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ui:repeat value="#{bibliotecaBean.livros}" var="livro">
+                    <tr>
+                        <td data-label="Título">
+                            <h:outputText value="#{livro.titulo}" />
+                        </td>
+                        <td data-label="Autor">
+                            <h:outputText value="#{livro.autor.nome}" />
+                        </td>
+                        <td data-label="ISBN">
+                            <h:outputText value="#{livro.isbn}" />
+                        </td>
+                        <td data-label="Status">
+                            <h:outputText value="#{livro.disponivel ? 'Disponível' : 'Emprestado'}" />
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </tbody>
+        </table>
+
+        <h2>Empréstimos Ativos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th><h:outputText value="Usuário" /></th>
+                    <th><h:outputText value="Livro" /></th>
+                    <th><h:outputText value="Data Empréstimo" /></th>
+                    <th><h:outputText value="Data Prevista" /></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ui:repeat value="#{bibliotecaBean.emprestimosAtivos}" var="emprestimo">
+                    <tr>
+                        <td data-label="Usuário">
+                            <h:outputText value="#{emprestimo.nomeUsuario}" />
+                        </td>
+                        <td data-label="Livro">
+                            <h:outputText value="#{emprestimo.livro.titulo}" />
+                        </td>
+                        <td data-label="Data Empréstimo">
+                            <h:outputText value="#{emprestimo.dataEmprestimo}" />
+                        </td>
+                        <td data-label="Data Prevista">
+                            <h:outputText value="#{emprestimo.dataDevolucaoPrevista}" />
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </tbody>
+        </table>
+    </h:form>
+</h:body>
+</html>
